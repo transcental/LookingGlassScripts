@@ -5,7 +5,7 @@ file_directories = []
 for i in range(3):
     file_directories.append(input(f"Starting Directory {i+1}:  "))
 file_directory_end = input("Ending Directory:  ")
-total_frames = int(input("Total Frames:  "))
+total_frames = int(input("Total Views:  "))
 
 
 for i in range(3):
@@ -13,6 +13,6 @@ for i in range(3):
         for entry in it:
             filename = os.path.basename(entry)
             if("_v" in filename):
-                current_view = int(filename[37] + filename[38])
+                current_view = int(filename[filename.index('_v')+2:filename.index('.png')])
                 if(current_view < (total_frames/3) * (i + 1) and current_view >= (total_frames/3) * i):
                     shutil.copy(entry, file_directory_end)

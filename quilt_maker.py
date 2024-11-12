@@ -61,6 +61,7 @@ make_quilt_button.pack(pady=20)
 
 
 def make_quilt(path, targetDisplayIndex):
+
     # Find quilt ratio of target display
     total_columns = LOOKING_GLASS_QUILT_LAYOUTS[targetDisplayIndex][0]
     total_rows = LOOKING_GLASS_QUILT_LAYOUTS[targetDisplayIndex][1]
@@ -75,63 +76,64 @@ def make_quilt(path, targetDisplayIndex):
     current_row = 0
     current_column = 0
 
+    #with os.scandir(path) as directory:
+    # print(f'{directory=}')
+    # for item in directory:
+    #     print(f'{item=}')
+
     # Get everything in the target directory
-    with os.scandir(path) as directory:
-        ############ no protection from blender quilts
-        dir = sorted(os.listdir(path))
-        # print(f'{directory=}')
-        # for item in directory:
-        #     print(f'{item=}')
-        number_of_quilts = len(dir) / size_of_quilts
-        for quilt_itorator in range(int(number_of_quilts)):
-            for i in range(size_of_quilts +1):
-                # Replace the '-' with the image
-                if "_v" in str(dir[i+size_of_quilts*quilt_itorator]): ########protection from blender quilts but too late
-                    # print(f'angle {i}')
-                    quilt_layout[current_row][current_column] = path + dir[i+size_of_quilts*quilt_itorator]
-                    current_column += 1
-                    if current_column == total_columns:
-                        current_column = 0
-                        current_row += 1
+    ############ no protection from blender quilts
+    dir = sorted(os.listdir(path))
+    number_of_quilts = len(dir) / size_of_quilts
+    for quilt_itorator in range(int(number_of_quilts)):
+        for i in range(size_of_quilts):
+            # Replace the '-' with the image
+            if "_v" in str(dir[i+size_of_quilts*quilt_itorator]): ########protection from blender quilts but too late
+                # print(f'angle {i}')
+                quilt_layout[current_row][current_column] = path + '\\'*(path[-1]!='\\') + dir[i+size_of_quilts*quilt_itorator]
+                current_column += 1
+                if current_column == total_columns:
+                    current_column = 0
+                    current_row += 1
+            else:
+                print(dir[i+size_of_quilts*quilt_itorator])
+        current_row = 0
+        # Find the size of a single image
+       # print(quilt_layout)
 
-                else:
-                    print(dir[i+size_of_quilts*quilt_itorator])
-            current_row = 0
-            # Find the size of a single image
-            print(quilt_layout)
-            image_width, image_height = Image.open(quilt_layout[0][0]).size
-            # Extrapolate that to the width and height that the quilt will need to be
-            quilt_width = image_width * total_columns
-            quilt_height = image_height * total_rows
+        image_width, image_height = Image.open(quilt_layout[0][0]).size
+        # Extrapolate that to the width and height that the quilt will need to be
+        quilt_width = image_width * total_columns
+        quilt_height = image_height * total_rows
 
-            # Create an empty image to save the quilt into
-            quilt = Image.new("RGBA", (quilt_width, quilt_height))
-            quiltMap = quilt.load()
+        # Create an empty image to save the quilt into
+        quilt = Image.new("RGBA", (quilt_width, quilt_height))
+        quiltMap = quilt.load()
 
+        current_width = 0
+        current_height = 0
+        for row in range(total_rows):
             current_width = 0
-            current_height = 0
-            for row in range(total_rows):
-                current_width = 0
-                for column in range(total_columns):
+            for column in range(total_columns):
 
-                    # Open the next image to be copied onto the quilt
-                    current_image = Image.open(quilt_layout[row][column])
-                    current_image_map = current_image.load()
+                # Open the next image to be copied onto the quilt
+                current_image = Image.open(quilt_layout[row][column])
+                current_image_map = current_image.load()
 
-                    # Copy each pixel from the image to the quilt
-                    for x in range(image_width):
-                        for y in range(image_height):
-                            # current_width and current_height are the offset added to x and y so they are in the correct column and row on the quilt
-                            quiltMap[
-                                current_width + x, (quilt_height - 1) - (current_height + y)
-                            ] = current_image_map[x, (image_height - 1) - y]
-                    current_width = image_width * (column + 1)
-                current_height = image_height * (row + 1)
+                # Copy each pixel from the image to the quilt
+                for x in range(image_width):
+                    for y in range(image_height):
+                        # current_width and current_height are the offset added to x and y so they are in the correct column and row on the quilt
+                        quiltMap[
+                            current_width + x, (quilt_height - 1) - (current_height + y)
+                        ] = current_image_map[x, (image_height - 1) - y]
+                current_width = image_width * (column + 1)
+            current_height = image_height * (row + 1)
 
-            # quilt.show()
+        # quilt.show()
 
-            print(f"Quilt {quilt_itorator} has been saved")
-            quilt.save(f"quilt/{quilt_itorator}.png")
+        print(f"Quilt {quilt_itorator} has been saved")
+        quilt.save(f"quilt/{quilt_itorator}.png")
 
 
 root.mainloop()
