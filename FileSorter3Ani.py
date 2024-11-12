@@ -12,6 +12,6 @@ for i in range(3):
      with os.scandir(file_directories[i]) as it:
         for entry in it:
             filename = os.path.basename(entry)
-            current_frame = int(filename[21] + filename[22])
-            if(current_frame < total_frames * (i + 1) and current_frame >= total_frames * i):
+            current_view = int(filename[37] + filename[38])
+            if(current_view < total_frames * (i + 1) and current_view >= total_frames * i):
                 shutil.copy(entry, file_directory_end)
