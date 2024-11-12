@@ -83,7 +83,7 @@ def make_quilt(path, targetDisplayIndex):
                 current_column += 1
                 if current_column == total_columns:
                     current_column = 0
-                    currentRow += 1
+                    current_row += 1
 
             else:
                 print(entry)
