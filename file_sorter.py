@@ -3,6 +3,7 @@ import shutil
 
 
 def copy_needed_images(src, end):
+    
     if os.listdir(end) != 0:
         with os.scandir(end) as it:
             for entry in it:
