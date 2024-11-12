@@ -13,5 +13,5 @@ for i in range(3):
         for entry in it:
             filename = os.path.basename(entry)
             current_view = int(filename[37] + filename[38])
-            if(current_view < total_frames * (i + 1) and current_view >= total_frames * i):
+            if(current_view < (total_frames/3) * (i + 1) and current_view >= (total_frames/3) * i):
                 shutil.copy(entry, file_directory_end)
